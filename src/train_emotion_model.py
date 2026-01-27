@@ -2,6 +2,7 @@ import os
 import tensorflow as tf
 from emotion_model import build_emotion_model
 from emotion_config import EMOTIONS, TARGET_IMAGE_SIZE
+from data_loader import EmotionDataLoader
 
 def compile_model(model, learning_rate=0.001):
     """
@@ -84,27 +85,53 @@ def train_model():
     print("\n--- Model Compilation Complete ---")
     model.summary()
 
-    # 3. Data Loading (Placeholders)
-    # TODO: Integrate EmotionDataLoader to fetch training and validation generators
-    # train_generator = ...
-    # val_generator = ...
+    # 3. Data Loading
+    print("\n--- Loading Dataset ---")
+    data_loader = EmotionDataLoader(data_dir='./data')
     
-    print("\n[TODO]: Data loaders are not yet connected. Connect training generators here.")
+    try:
+        # Load Training Data
+        X_train, y_train = data_loader.load_data('train')
+        
+        # Load Validation Data
+        X_val, y_val = data_loader.load_data('val')
+        
+        if len(X_train) == 0:
+            print("Error: No training data found. Please add images to 'data/train/' folders.")
+            return
+
+        # Convert labels to one-hot encoding for categorical crossentropy
+        y_train = tf.keras.utils.to_categorical(y_train, num_classes=NUM_CLASSES)
+        
+        if len(X_val) > 0:
+            y_val = tf.keras.utils.to_categorical(y_val, num_classes=NUM_CLASSES)
+            validation_data = (X_val, y_val)
+        else:
+            print("Warning: No validation data found. Training will proceed without validation metrics.")
+            validation_data = None
+            
+    except Exception as e:
+        print(f"Critical Error during data loading: {e}")
+        return
 
     # 4. Initiate Training
-    # TODO: Uncomment and run once data loaders are ready
+    # Uncomment to start training once data is available
     """
     print(f"\nStarting training for {EPOCHS} epochs...")
     history = model.fit(
-        train_generator,
-        steps_per_epoch=train_generator.samples // BATCH_SIZE,
+        x=X_train,
+        y=y_train,
+        batch_size=BATCH_SIZE,
         epochs=EPOCHS,
-        validation_data=val_generator,
-        validation_steps=val_generator.samples // BATCH_SIZE,
+        validation_data=validation_data,
         callbacks=get_train_callbacks(CHECKPOINT_DIR)
     )
     print("\nTraining completed.")
     """
+    print("\n[READY] Training pipeline is initialized and data loading is integrated.")
+    print(f"Training Samples: {len(X_train)}")
+    print(f"Validation Samples: {len(X_val) if len(X_val) > 0 else 0}")
+    print("Uncomment the 'model.fit' block in the script to start actual training.")
 
 if __name__ == "__main__":
     # Guarded execution to define the pipeline without running it by default
