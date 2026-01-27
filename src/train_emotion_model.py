@@ -115,23 +115,34 @@ def train_model():
         return
 
     # 4. Initiate Training
-    # Uncomment to start training once data is available
-    """
-    print(f"\nStarting training for {EPOCHS} epochs...")
-    history = model.fit(
-        x=X_train,
-        y=y_train,
-        batch_size=BATCH_SIZE,
-        epochs=EPOCHS,
-        validation_data=validation_data,
-        callbacks=get_train_callbacks(CHECKPOINT_DIR)
-    )
-    print("\nTraining completed.")
-    """
-    print("\n[READY] Training pipeline is initialized and data loading is integrated.")
-    print(f"Training Samples: {len(X_train)}")
-    print(f"Validation Samples: {len(X_val) if len(X_val) > 0 else 0}")
-    print("Uncomment the 'model.fit' block in the script to start actual training.")
+    if len(X_train) > 0:
+        print(f"\nStarting training for {EPOCHS} epochs...")
+        
+        try:
+            history = model.fit(
+                x=X_train,
+                y=y_train,
+                batch_size=BATCH_SIZE,
+                epochs=EPOCHS,
+                validation_data=validation_data,
+                callbacks=get_train_callbacks(CHECKPOINT_DIR)
+            )
+            print("\nTraining completed.")
+            
+            # --- Model Persistence ---
+            # Save the final trained model
+            final_model_dir = 'models'
+            if not os.path.exists(final_model_dir):
+                os.makedirs(final_model_dir)
+                
+            final_model_path = os.path.join(final_model_dir, 'emotion_cnn.h5')
+            model.save(final_model_path)
+            print(f"Final model saved to: {final_model_path}")
+
+        except Exception as e:
+            print(f"Error during training execution: {e}")
+    else:
+        print("Skipping training loop. No training data loaded.")
 
 if __name__ == "__main__":
     # Guarded execution to define the pipeline without running it by default
