@@ -1,0 +1,98 @@
+import cv2
+import time
+import numpy as np
+from face_detection import FaceDetector
+from preprocessing import FacePreprocessor
+from emotion_inference import EmotionClassifier
+
+def run_webcam_emotion_recognition():
+    """
+    Captures video from the webcam, detects faces, predicts emotions, 
+    and displays the results in real-time.
+    """
+    # 1. Initialize Components
+    print("Initializing components...")
+    try:
+        detector = FaceDetector()
+        preprocessor = FacePreprocessor(target_size=(48, 48))
+        classifier = EmotionClassifier(model_path='models/emotion_cnn.h5')
+    except Exception as e:
+        print(f"Error initializing components: {e}")
+        return
+
+    # 2. Open Webcam
+    # 0 is usually the built-in webcam. Change to 1 or 2 if you have external cameras.
+    cap = cv2.VideoCapture(0)
+
+    if not cap.isOpened():
+        print("Error: Could not open webcam.")
+        return
+
+    print("Webcam started. Press 'q' to quit.")
+
+    # 3. Real-time Loop
+    while True:
+        # Capture frame-by-frame
+        ret, frame = cap.read()
+
+        if not ret:
+            print("Error: Failed to capture frame.")
+            break
+
+        # Flip frame horizontally for a mirror effect (more natural for user)
+        frame = cv2.flip(frame, 1)
+        
+        # Create a copy for drawing annotations
+        annotated_frame = frame.copy()
+
+        # A. Detect Faces
+        # Returns list of (x, y, w, h)
+        faces = detector.detect_faces(frame)
+
+        for (x, y, w, h) in faces:
+            bbox = (x, y, w, h)
+            
+            # B. Preprocess Face
+            # Returns normalized (48, 48, 1) array or None
+            processed_face = preprocessor.preprocess_pipeline(frame, bbox)
+
+            if processed_face is not None:
+                # C. Predict Emotion
+                label, confidence = classifier.predict(processed_face)
+                
+                # Format Label Text
+                text = f"{label}: {confidence:.2f}"
+                
+                # Color Coding (Optional: Change color based on emotion)
+                color = (0, 255, 0) # Green for all by default
+                if label == 'angry': color = (0, 0, 255) # Red
+                if label == 'happy': color = (0, 255, 255) # Yellow
+                
+            else:
+                text = "Processing Error"
+                color = (0, 0, 255)
+
+            # D. Draw Annotations
+            # Rectangle around face
+            cv2.rectangle(annotated_frame, (x, y), (x + w, y + h), color, 2)
+            
+            # Label above face
+            # Ensure text doesn't go off-screen at the top
+            text_y = y - 10 if y - 10 > 10 else y + h + 20
+            cv2.putText(annotated_frame, text, (x, text_y), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+
+        # Display Result
+        cv2.imshow('Emotion Recognition', annotated_frame)
+
+        # Exit Strategy
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    # Cleanup
+    cap.release()
+    cv2.destroyAllWindows()
+    print("Webcam released. Exiting application.")
+
+if __name__ == "__main__":
+    run_webcam_emotion_recognition()
