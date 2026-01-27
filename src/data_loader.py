@@ -1,12 +1,16 @@
 import os
+import cv2
+import numpy as np
 from typing import List, Tuple, Optional
+from preprocessing import FacePreprocessor
+from emotion_config import EMOTIONS, EMOTION_TO_INDEX, TARGET_IMAGE_SIZE
 
 class EmotionDataLoader:
     """
-    A base class for loading and managing the Emotion Detection dataset.
+    A class for loading and managing the Emotion Detection dataset.
     
-    This skeleton is designed to be extensible for different ML frameworks
-    (TensorFlow, PyTorchand provides placeholders for common data pipeline steps.
+    It scans the directory structure, loads images, applies preprocessing
+    (grayscale, resize, normalize), and returns numpy arrays ready for training.
     """
 
     def __init__(self, data_dir: str):
@@ -17,58 +21,82 @@ class EmotionDataLoader:
             data_dir (str): Path to the root 'data/' directory.
         """
         self.data_dir = data_dir
-        self.emotions = ["happy", "sad", "calm", "angry"]
-        self.splits = ["train", "val", "test"]
+        self.emotions = EMOTIONS
+        self.preprocessor = FacePreprocessor(target_size=TARGET_IMAGE_SIZE)
 
-    def get_image_paths(self, split: str, emotion: str) -> List[str]:
+    def load_data(self, split: str) -> Tuple[np.ndarray, np.ndarray]:
         """
-        Retrieves all image file paths for a specific data split and emotion class.
+        Loads images and labels for a specific data split.
 
         Args:
             split (str): One of 'train', 'val', or 'test'.
-            emotion (str): The emotion category (e.g., 'happy').
 
         Returns:
-            List[str]: A list of absolute or relative paths to the image files.
+            Tuple[np.ndarray, np.ndarray]:
+                - X: Image data array of shape (N, 48, 48, 1)
+                - y: Label data array of shape (N,)
         """
-        # TODO: Implement file discovery logic
-        path = os.path.join(self.data_dir, split, emotion)
-        return []
+        images = []
+        labels = []
+        
+        split_dir = os.path.join(self.data_dir, split)
+        if not os.path.exists(split_dir):
+            print(f"Warning: Split directory not found: {split_dir}")
+            return np.array([]), np.array([])
 
-    def load_dataset_metadata(self) -> dict:
-        """
-        Loads and returns a summary of the dataset (e.g., count per class).
+        print(f"Loading {split} data from {split_dir}...")
 
-        Returns:
-            dict: A dictionary containing class distributions across splits.
-        """
-        # TODO: Implement metadata calculation logic
-        metadata = {split: {emotion: 0 for emotion in self.emotions} for split in self.splits}
-        return metadata
-
-    def preprocess_image(self, image_path: str, target_size: Tuple[int, int] = (224, 224)):
-        """
-        Placeholder for image preprocessing logic (resizing, normalization, etc.).
-
-        Args:
-            image_path (str): Path to the image file.
-            target_size (Tuple[int, int]): Desired output resolution.
-        """
-        # TODO: Implement preprocessing using CV2 or PIL
-        pass
-
-    def create_batch_generator(self, split: str, batch_size: int = 32):
-        """
-        Placeholder for creating a batch generator (e.g., using tf.data or PyTorch DataLoader).
-
-        Args:
-            split (str): One of 'train', 'val', or 'test'.
-            batch_size (int): Number of images per batch.
-        """
-        # TODO: Implement pipeline integration for high-performance loading
-        pass
+        for emotion in self.emotions:
+            emotion_dir = os.path.join(split_dir, emotion)
+            
+            # Skip if specific emotion folder doesn't exist
+            if not os.path.exists(emotion_dir):
+                continue
+            
+            label_index = EMOTION_TO_INDEX[emotion]
+            file_list = os.listdir(emotion_dir)
+            
+            for img_name in file_list:
+                img_path = os.path.join(emotion_dir, img_name)
+                
+                try:
+                    # Read image
+                    img = cv2.imread(img_path)
+                    if img is None:
+                        continue
+                        
+                    # Preprocess Pipeline
+                    # 1. Convert to grayscale (if not already)
+                    gray = self.preprocessor.to_grayscale(img)
+                    
+                    # 2. Resize to target dimension (e.g., 48x48)
+                    resized = self.preprocessor.resize_face(gray)
+                    
+                    # 3. Normalize pixel values to [0, 1]
+                    normalized = self.preprocessor.normalize(resized)
+                    
+                    # 4. Expand dimensions to (48, 48, 1) for Keras input
+                    if len(normalized.shape) == 2:
+                        normalized = np.expand_dims(normalized, axis=-1)
+                        
+                    images.append(normalized)
+                    labels.append(label_index)
+                    
+                except Exception as e:
+                    print(f"Error loading {img_path}: {e}")
+                    
+        X = np.array(images)
+        y = np.array(labels)
+        
+        print(f"Loaded {len(X)} images for split '{split}'.")
+        return X, y
 
 if __name__ == "__main__":
-    # Example usage (Skeleton only)
+    # Internal test
     loader = EmotionDataLoader(data_dir="./data")
     print(f"Initialized EmotionDataLoader for: {loader.emotions}")
+    
+    # Attempt to load a split (will be empty if no data exists yet)
+    X, y = loader.load_data("train")
+    if len(X) > 0:
+        print(f"Sample shape: {X.shape}, Label shape: {y.shape}")
