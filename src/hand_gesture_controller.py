@@ -43,8 +43,8 @@ class HandGestureController:
             options = vision.HandLandmarkerOptions(
                 base_options=base_options,
                 num_hands=1,
-                min_hand_detection_confidence=0.5,
-                min_hand_presence_confidence=0.5,
+                min_hand_detection_confidence=0.4,
+                min_hand_presence_confidence=0.4,
                 running_mode=vision.RunningMode.IMAGE
             )
             self.detector = vision.HandLandmarker.create_from_options(options)
