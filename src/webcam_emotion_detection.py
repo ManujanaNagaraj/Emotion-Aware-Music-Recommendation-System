@@ -85,6 +85,11 @@ def run_webcam_emotion_recognition():
                 # C. Predict Emotion
                 label, confidence = classifier.predict(processed_face)
                 
+                # D. Hybrid Smile Detection (Secondary check)
+                # This helps detect 'happy' even if the CNN model is missing or low-confidence
+                roi_gray = cv2.cvtColor(frame[y:y+h, x:x+w], cv2.COLOR_BGR2GRAY)
+                is_smiling = detector.detect_smile(roi_gray)
+                
                 # Update current detected emotion
                 current_emotion = label
                 current_confidence = confidence
