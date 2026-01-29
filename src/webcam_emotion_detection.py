@@ -72,6 +72,7 @@ def run_webcam_emotion_recognition():
                 
                 # Update current detected emotion
                 current_emotion = label
+                current_confidence = confidence
                 
                 # Format Label Text
                 text = f"{label}: {confidence:.2f}"
