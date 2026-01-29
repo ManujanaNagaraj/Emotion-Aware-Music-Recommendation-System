@@ -8,7 +8,14 @@ from spotify_player import open_playlist_for_emotion
 from hand_gesture_controller import HandGestureController
 
 # Configuration for detection
-CONFIDENCE_THRESHOLD = 0.4  # Threshold below which emotion defaults to 'calm'
+CONFIDENCE_THRESHOLD = 0.4 
+UI_COLORS = {
+    "gesture": (255, 255, 0),    # Cyan/Yellow
+    "prompt": (255, 255, 255),   # White
+    "warning": (0, 0, 255),      # Red
+    "success": (0, 255, 0),      # Green
+    "cooldown": (50, 50, 150)    # Deep Red
+}
 
 def get_effective_emotion(detected_emotion, confidence, is_smiling=False):
     """
@@ -221,6 +228,11 @@ def run_webcam_emotion_recognition():
                 h, w, _ = frame.shape
                 wrist = h_landmarks[0]
                 cv2.circle(annotated_frame, (int(wrist[0]*w), int(wrist[1]*h)), 8, (0, 255, 0), -1)
+                
+                # Check for boundary warning
+                if wrist[0] < 0.1 or wrist[0] > 0.9 or wrist[1] < 0.1 or wrist[1] > 0.9:
+                    cv2.putText(annotated_frame, "MOVE HAND TO CENTER", (10, 160), 
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 165, 255), 1)
                 
                 # Draw Hand Landmarks visually on the annotated frame
                 results = gesture_controller.hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
