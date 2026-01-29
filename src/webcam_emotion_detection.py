@@ -5,6 +5,7 @@ from face_detection import FaceDetector
 from preprocessing import FacePreprocessor
 from emotion_inference import EmotionClassifier
 from spotify_player import open_playlist_for_emotion
+from hand_gesture_controller import HandGestureController
 
 # Configuration for detection
 CONFIDENCE_THRESHOLD = 0.4  # Threshold below which emotion defaults to 'calm'
