@@ -93,6 +93,9 @@ class HandGestureController:
         Orchestrates detection and classification.
         Returns (gesture_name, landmarks)
         """
+        if frame is None or frame.size == 0:
+            return "none", None
+
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         landmarks = self._extract_landmarks(frame_rgb)
         
@@ -137,9 +140,12 @@ if __name__ == "__main__":
         gesture, landmarks = controller.get_gesture(frame)
         
         if landmarks:
-            # Draw landmarks in test mode
-            # Implementation of drawing landmarks...
-            pass
+            # Draw landmarks in test mode using MediaPipe utilities
+            results = controller.hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            if results.multi_hand_landmarks:
+                for hand_lms in results.multi_hand_landmarks:
+                    controller.mp_draw.draw_landmarks(
+                        frame, hand_lms, controller.mp_hands.HAND_CONNECTIONS)
                 
         cv2.putText(frame, f"Gesture: {gesture}", (10, 50), 
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
