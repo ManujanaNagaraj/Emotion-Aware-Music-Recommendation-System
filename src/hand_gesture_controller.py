@@ -210,8 +210,20 @@ if __name__ == "__main__":
             cv2.putText(frame, "NO HAND DETECTED", (10, 120), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
                 
-        cv2.putText(frame, f"Gesture: {gesture.upper()}", (10, 40), 
-                    cv2.FONT_HERSHEY_DUPLEX, 1.2, (0, 255, 255), 2)
+        # Map gesture names to emojis for display
+        emoji_map = {
+            "open_palm": "OPEN PALM (PLAY) \u270B",
+            "fist": "FIST (STOP) \u270A",
+            "point_right": "POINT RIGHT (NEXT) \ud83d\udc49",
+            "point_left": "POINT LEFT (PREV) \ud83d\udc48",
+            "two_fingers": "TWO FINGERS (MOOD) \u270c\ufe0f",
+            "none": "NONE",
+            "unknown": "UNKNOWN"
+        }
+        display_gesture = emoji_map.get(gesture.split(" (")[0], gesture)
+
+        cv2.putText(frame, f"Gesture: {display_gesture}", (10, 40), 
+                    cv2.FONT_HERSHEY_DUPLEX, 1.0, (0, 255, 255), 2)
         cv2.putText(frame, f"FPS: {int(fps)}", (10, 70), 
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
         
