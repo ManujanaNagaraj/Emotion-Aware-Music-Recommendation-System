@@ -106,8 +106,8 @@ class HandGestureController:
         if open_count == 0:
             return "fist"
             
-        # 3. Two Fingers (Victory/Next): Index and Middle up
-        if open_count == 2 and finger_states[1] and finger_states[2]:
+        # 3. Two Fingers (Victory/Next): Index and Middle up, others down
+        if open_count == 2 and finger_states[1] and finger_states[2] and not finger_states[3]:
             return "two_fingers"
             
         # 4. Thumb Up: Only thumb is up
