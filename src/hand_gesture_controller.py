@@ -53,10 +53,12 @@ class HandGestureController:
     def _is_thumb_open(self, landmarks: List[Tuple]) -> bool:
         """
         Special detection for thumb which typically moves horizontally.
-        Tip=4, IP Joint=3, MCP Joint=2
+        Tip=4, IP Joint=3, MCP Joint=2, Wrist=0
+        
+        Note: This assumes the hand is facing the camera (palm forward).
         """
-        # For a right hand facing camera, thumb tip X should be smaller than MCP X 
-        # (This varies by hand orientation, but we'll use a simple proximity check for now)
+        # Distance between thumb tip and Pinky MCP (Landmark 17)
+        # If open, the thumb tip should be further from the hand base than the IP joint
         return abs(landmarks[4][0] - landmarks[17][0]) > abs(landmarks[3][0] - landmarks[17][0])
 
     def get_finger_states(self, landmarks: List[Tuple]) -> List[bool]:
