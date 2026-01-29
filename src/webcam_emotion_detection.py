@@ -142,6 +142,17 @@ def run_webcam_emotion_recognition():
             cv2.putText(annotated_frame, text, (x, text_y), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
+        # --- Global Overrides & Indicators ---
+        if manual_emotion:
+            cv2.putText(annotated_frame, "DEMO MODE: MANUAL OVERRIDE ACTIVE", (10, 30), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+            cv2.putText(annotated_frame, f"Locked to: {manual_emotion.upper()}", (10, 60), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 1)
+        
+        # Display Instructions on frame
+        cv2.putText(annotated_frame, "Press 'p' to Play | 'r' to Reset", (10, annotated_frame.shape[0] - 10), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+
         # Display Result
         cv2.imshow('Emotion Recognition', annotated_frame)
 
