@@ -147,8 +147,8 @@ def run_webcam_emotion_recognition():
         # Capture frame-by-frame
         ret, frame = cap.read()
 
-        if not ret:
-            print("Error: Failed to capture frame.")
+        if not ret or frame is None or frame.size == 0:
+            print("Error: Failed to capture valid frame.")
             break
 
         # Flip frame horizontally for a mirror effect (more natural for user)
@@ -175,9 +175,12 @@ def run_webcam_emotion_recognition():
                 label, confidence = classifier.predict(processed_face)
                 
                 # D. Hybrid Smile Detection (Secondary check)
-                # This helps detect 'happy' even if the CNN model is missing or low-confidence
-                roi_gray = cv2.cvtColor(frame[y:y+h, x:x+w], cv2.COLOR_BGR2GRAY)
-                is_smiling = detector.detect_smile(roi_gray)
+                face_roi = frame[y:y+h, x:x+w]
+                if face_roi.size > 0:
+                    roi_gray = cv2.cvtColor(face_roi, cv2.COLOR_BGR2GRAY)
+                    is_smiling = detector.detect_smile(roi_gray)
+                else:
+                    is_smiling = False
                 
                 # Hybrid Logic: If the model says 'unknown' but the user is smiling, force 'happy'
                 if label == "unknown" and is_smiling:
