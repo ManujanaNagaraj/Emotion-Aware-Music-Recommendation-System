@@ -9,18 +9,32 @@ from spotify_player import open_playlist_for_emotion
 # Configuration for detection
 CONFIDENCE_THRESHOLD = 0.4  # Threshold below which emotion defaults to 'calm'
 
-def get_effective_emotion(detected_emotion, confidence):
+def get_effective_emotion(detected_emotion, confidence, is_smiling=False):
     """
-    Applies fallback logic for demo purposes.
-    If the emotion is unknown or confidence is low, defaults to 'calm'.
+    Applies fallback and hybrid logic for demo purposes.
+    - If the emotion is unknown but user is smiling, returns 'happy'.
+    - If the emotion is unknown/low and not smiling, defaults to 'calm'.
     """
-    if detected_emotion == "unknown" or confidence < CONFIDENCE_THRESHOLD:
-        reason = "Unknown emotion" if detected_emotion == "unknown" else f"Low confidence ({confidence:.2f})"
-        print(f"\n[DEMO FALLBACK] {reason} detected. Defaulting to: 'calm'")
-        return "calm"
+    effective = detected_emotion
+    source = "AI Model"
+
+    # Hybrid Logic: SMILE detection
+    if effective == "unknown" and is_smiling:
+        effective = "happy"
+        source = "Hybrid (Smile Detection)"
+        print(f"\n[HYBRID] Smile detected! Overriding 'unknown' with: '{effective}'")
     
-    print(f"\n[MATCH] Confidence {confidence:.2f} above threshold. Using: '{detected_emotion}'")
-    return detected_emotion
+    # Fallback Logic: Unknown or Low Confidence
+    elif effective == "unknown" or confidence < CONFIDENCE_THRESHOLD:
+        reason = "Unknown emotion" if effective == "unknown" else f"Low confidence ({confidence:.2f})"
+        effective = "calm"
+        source = f"Demo Fallback ({reason})"
+        print(f"\n[DEMO FALLBACK] {reason} detected. Defaulting to: '{effective}'")
+    
+    else:
+        print(f"\n[MATCH] Confidence {confidence:.2f} above threshold. Using: '{effective}'")
+    
+    return effective
 
 def run_webcam_emotion_recognition():
     """
