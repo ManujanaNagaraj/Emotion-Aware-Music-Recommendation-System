@@ -241,11 +241,16 @@ def run_webcam_emotion_recognition():
                     cv2.putText(annotated_frame, "MOVE HAND TO CENTER", (10, 160), 
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 165, 255), 1)
                 
+                # Visual confirmation of hand detection
+                cv2.putText(annotated_frame, "HAND: TRACKING", (10, 140), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
+                
                 # Draw Hand Landmarks visually on the annotated frame
                 h, w, _ = frame.shape
                 for lm in h_landmarks:
                     cx, cy = int(lm[0] * w), int(lm[1] * h)
-                    cv2.circle(annotated_frame, (cx, cy), 3, (0, 255, 0), -1)
+                    # Use slightly larger, bright green dots
+                    cv2.circle(annotated_frame, (cx, cy), 4, (0, 255, 0), -1)
             
             # Display Gesture Indicator
             if gesture != "none" and gesture != "unknown":
