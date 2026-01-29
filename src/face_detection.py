@@ -86,11 +86,12 @@ class FaceDetector:
             return False
 
         # Detect smiles
+        # scaleFactor=1.7 and minNeighbors=22 are conservative to avoid false positives
         smiles = self.smile_cascade.detectMultiScale(
             roi_gray,
             scaleFactor=1.7,
-            minNeighbors=22,
-            minSize=(25, 25)
+            minNeighbors=25,
+            minSize=(30, 30)
         )
         return len(smiles) > 0
 
