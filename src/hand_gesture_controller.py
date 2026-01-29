@@ -82,3 +82,48 @@ class HandGestureController:
             return "thumb_up"
             
         return "unknown"
+
+    def get_gesture(self, frame) -> Tuple[str, Optional[List]]:
+        """
+        Orchestrates detection and classification.
+        Returns (gesture_name, landmarks)
+        """
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        landmarks = self._extract_landmarks(frame_rgb)
+        
+        if landmarks:
+            finger_states = self.get_finger_states(landmarks)
+            gesture = self.classify_gesture(finger_states)
+            return gesture, landmarks
+        
+        return "none", None
+
+if __name__ == "__main__":
+    # Standalone Test Mode
+    controller = HandGestureController()
+    cap = cv2.VideoCapture(0)
+    
+    print("--- Hand Gesture Controller Test ---")
+    print("Commands: 'q' to quit")
+    
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            break
+            
+        gesture, landmarks = controller.get_gesture(frame)
+        
+        if landmarks:
+            # Optional: Simple terminal output for verification
+            if gesture != "unknown":
+                print(f"Detected Gesture: {gesture.upper()}")
+                
+        cv2.putText(frame, f"Gesture: {gesture}", (10, 50), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        
+        cv2.imshow('Gesture Test', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+            
+    cap.release()
+    cv2.destroyAllWindows()
