@@ -41,6 +41,19 @@ def get_playlist_url(playlist_id: str) -> str:
     """
     return f"https://open.spotify.com/playlist/{playlist_id}"
 
+def get_playlist_uri(playlist_id: str) -> str:
+    """
+    Converts a Spotify playlist ID into a native App URI.
+    This is used to open the Spotify Desktop App directly.
+
+    Args:
+        playlist_id (str): The Spotify playlist ID.
+
+    Returns:
+        str: The Spotify URI (e.g., 'spotify:playlist:ID').
+    """
+    return f"spotify:playlist:{playlist_id}"
+
 if __name__ == "__main__":
     # Internal validation/demo logic
     print("--- Spotify Configuration Summary ---")
