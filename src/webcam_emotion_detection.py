@@ -7,7 +7,7 @@ from emotion_inference import EmotionClassifier
 from spotify_player import open_playlist_for_emotion
 from hand_gesture_controller import HandGestureController
 
-# Configuration for detection
+# Configuration for detection (Global)
 CONFIDENCE_THRESHOLD = 0.4 
 UI_COLORS = {
     "gesture": (255, 255, 0),    # Cyan/Yellow
