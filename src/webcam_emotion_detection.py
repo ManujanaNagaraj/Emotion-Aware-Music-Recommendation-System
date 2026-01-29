@@ -74,7 +74,7 @@ def handle_gesture_action(gesture: str, current_emotion: str, current_confidence
         
     elif gesture == "two_fingers":
         open_playlist_for_emotion(current_emotion)
-        action_message = f"SHUFFLING {current_emotion.upper()} MOOD ✌️"
+        action_message = f"SHUFFLING {current_emotion.upper()} MOOD"
         
     return manual_emotion, action_message
 
@@ -88,7 +88,7 @@ def draw_instructions(frame: np.ndarray, gestures_enabled: bool, draw_landmarks:
     
     # Legend for gestures (if enabled)
     if gestures_enabled:
-        legend = "\u270B:Play | \ud83d\udc49:Next | \ud83d\udc48:Prev | \u270c\ufe0f:Mood | \u270A:Stop"
+        legend = "Palm:Play | Right:Next | Left:Prev | 2Fingers:Mood | Fist:Stop"
         cv2.putText(frame, legend, (10, frame.shape[0] - 70), 
                     cv2.FONT_HERSHEY_SIMPLEX, 0.4, (200, 200, 200), 1)
 
@@ -242,26 +242,16 @@ def run_webcam_emotion_recognition():
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 165, 255), 1)
                 
                 # Draw Hand Landmarks visually on the annotated frame
-                results = gesture_controller.hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-                if results.multi_hand_landmarks:
-                    for hand_lms in results.multi_hand_landmarks:
-                        gesture_controller.mp_draw.draw_landmarks(
-                            annotated_frame, hand_lms, gesture_controller.mp_hands.HAND_CONNECTIONS)
+                h, w, _ = frame.shape
+                for lm in h_landmarks:
+                    cx, cy = int(lm[0] * w), int(lm[1] * h)
+                    cv2.circle(annotated_frame, (cx, cy), 3, (0, 255, 0), -1)
             
             # Display Gesture Indicator
             if gesture != "none" and gesture != "unknown":
-                # Emoji mapping for UI
-                emoji_ui = {
-                    "open_palm": "\u270B",
-                    "fist": "\u270A",
-                    "point_right": "\ud83d\udc49",
-                    "point_left": "\ud83d\udc48",
-                    "two_fingers": "\u270c\ufe0f"
-                }
                 pure_gesture = gesture.replace(" (cooldown)", "")
-                icon = emoji_ui.get(pure_gesture, "")
                 
-                label_text = f"HAND: {pure_gesture.upper().replace('_', ' ')} {icon}"
+                label_text = f"HAND: {pure_gesture.upper().replace('_', ' ')}"
                 # Add AI Source tag
                 cv2.rectangle(annotated_frame, (10, 100), (60, 115), (0, 255, 0), -1)
                 cv2.putText(annotated_frame, "AI", (20, 112), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1)

@@ -33,18 +33,28 @@ class HandGestureController:
     17-20: Pinky (MCP, PIP, DIP, TIP)
     """
     def __init__(self):
+        # --- NEW: MediaPipe Tasks API for Python 3.13 Support ---
         try:
-            self.mp_hands = mp.solutions.hands
-            self.hands = self.mp_hands.Hands(
-                static_image_mode=False,
-                max_num_hands=1,
-                min_detection_confidence=0.5,
-                min_tracking_confidence=0.5
+            from mediapipe.tasks import python
+            from mediapipe.tasks.python import vision
+            
+            model_path = 'models/hand_landmarker.task'
+            base_options = python.BaseOptions(model_asset_path=model_path)
+            options = vision.HandLandmarkerOptions(
+                base_options=base_options,
+                num_hands=1,
+                min_hand_detection_confidence=0.5,
+                min_hand_presence_confidence=0.5,
+                running_mode=vision.RunningMode.IMAGE
             )
-            self.mp_draw = mp.solutions.drawing_utils
+            self.detector = vision.HandLandmarker.create_from_options(options)
+            self.use_tasks_api = True
+            print("[INFO] HandGestureController initialized using MediaPipe Tasks API.")
+            
         except Exception as e:
-            print(f"[ERROR] Failed to initialize MediaPipe Hands: {e}")
-            self.hands = None
+            print(f"[ERROR] Failed to initialize MediaPipe Tasks API: {e}")
+            self.detector = None
+            self.use_tasks_api = False
         
         # Gesture Lifecycle State
         self.last_gesture = "none"
@@ -56,21 +66,24 @@ class HandGestureController:
         """
         Properly releases MediaPipe resources.
         """
-        if self.hands:
-            self.hands.close()
+        if self.use_tasks_api and self.detector:
+            self.detector.close()
 
     def _extract_landmarks(self, frame_rgb) -> Optional[List[Tuple[float, float, float]]]:
         """
         Processes frame and returns a list of landmark coordinates (x, y, z).
         """
-        if self.hands is None:
+        if not self.use_tasks_api or self.detector is None:
             return None
             
-        results = self.hands.process(frame_rgb)
-        if results.multi_hand_landmarks:
+        import mediapipe as mp
+        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame_rgb)
+        detection_result = self.detector.detect(mp_image)
+        
+        if detection_result.hand_landmarks:
             # We only support one hand for this demo
-            hand_landmarks = results.multi_hand_landmarks[0]
-            return [(lm.x, lm.y, lm.z) for lm in hand_landmarks.landmark]
+            hand_landmarks = detection_result.hand_landmarks[0]
+            return [(lm.x, lm.y, lm.z) for lm in hand_landmarks]
         return None
 
     def _is_finger_open(self, landmarks: List[Tuple], finger_tip_idx: int) -> bool:
