@@ -59,4 +59,7 @@ if __name__ == "__main__":
     print("--- Spotify Configuration Summary ---")
     for emotion, pl_id in EMOTION_PLAYLISTS.items():
         url = get_playlist_url(pl_id)
-        print(f"Emotion: {emotion:6} | ID: {pl_id:30} | URL: {url}")
+        uri = get_playlist_uri(pl_id)
+        print(f"Emotion: {emotion:6} | ID: {pl_id:30}")
+        print(f"  > URL: {url}")
+        print(f"  > URI: {uri}")
