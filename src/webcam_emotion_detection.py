@@ -1,6 +1,7 @@
 import cv2
 import time
 import numpy as np
+from typing import Optional, Tuple
 from face_detection import FaceDetector
 from preprocessing import FacePreprocessor
 from emotion_inference import EmotionClassifier
