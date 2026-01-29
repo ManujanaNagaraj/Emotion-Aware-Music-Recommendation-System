@@ -110,6 +110,10 @@ def run_webcam_emotion_recognition():
     current_confidence = 0.0
     manual_emotion = None # Manual override for demo (happy, sad, etc.)
     is_smiling = False     # Real-time smile status for hybrid detection
+    gestures_enabled = True # --- NEW: Toggle for touchless controls ---
+    draw_landmarks = True   # --- NEW: Toggle for hand landmark dots ---
+    popup_message = ""      # --- NEW: Toast notifications ---
+    popup_time = 0
     
     # 4. Real-time Loop
     while True:
@@ -273,6 +277,9 @@ def run_webcam_emotion_recognition():
         elif key == ord('g'):
             gestures_enabled = not gestures_enabled
             print(f"\n[CONTROL] Hand Gestures: {'ENABLED' if gestures_enabled else 'DISABLED'}")
+        elif key == ord('l'):
+            draw_landmarks = not draw_landmarks
+            print(f"\n[CONTROL] Hand Landmarks: {'SHOWN' if draw_landmarks else 'HIDDEN'}")
         elif key == ord('h'):
             manual_emotion = "happy"
             print("\n[DEMO OVERRIDE] Manual emotion set to: HAPPY")
