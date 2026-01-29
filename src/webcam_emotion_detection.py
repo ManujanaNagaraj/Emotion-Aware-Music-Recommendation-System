@@ -135,6 +135,9 @@ def run_webcam_emotion_recognition():
         key = cv2.waitKey(1) & 0xFF
         if key == ord('q'):
             break
+        elif key == ord('h'):
+            manual_emotion = "happy"
+            print("\n[DEMO OVERRIDE] Manual emotion set to: HAPPY")
         elif key == ord('p'):
             if current_emotion:
                 # Determine emotion with fallback logic
