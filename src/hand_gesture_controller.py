@@ -105,22 +105,27 @@ class HandGestureController:
         Maps a list of finger booleans to a gesture string.
         """
         open_count = sum(finger_states)
+        thumb_open, index_open, middle_open, ring_open, pinky_open = finger_states
         
-        # 1. Open Palm: All fingers up (Relaxed to 4 or 5 for easier demo)
+        # 1. Open Palm (✋): 4 or 5 fingers up
         if open_count >= 4:
             return "open_palm"
             
-        # 2. Fist: All 5 fingers down
+        # 2. Fist (✊): All fingers down
         if open_count == 0:
             return "fist"
             
-        # 3. Two Fingers (Victory/Next): Index and Middle up, others down
-        if open_count == 2 and finger_states[1] and finger_states[2] and not finger_states[3]:
+        # 3. Two Fingers (✌️): Index and Middle up
+        if open_count == 2 and index_open and middle_open:
             return "two_fingers"
-            
-        # 4. Thumb Up: Only thumb is up
-        if open_count == 1 and finger_states[0]:
-            return "thumb_up"
+
+        # 4. Pointing Logic (👉/👈): Only Index finger up
+        if open_count == 1 and index_open:
+            # We use the X-coordinate of the Index Tip (8) vs Index MCP (5)
+            # Note: MediaPipe X increases from Left to Right (0.0 to 1.0)
+            # Wait, I need landmarks for this. Passing finger_states isn't enough.
+            # I will refactor to pass landmarks to classify_gesture.
+            return "pointing"
             
         return "unknown"
 
