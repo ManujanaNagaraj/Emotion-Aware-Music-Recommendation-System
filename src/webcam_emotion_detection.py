@@ -184,8 +184,9 @@ def run_webcam_emotion_recognition():
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 1)
         
         # Display Instructions on frame
-        cv2.putText(annotated_frame, "Press 'p' to Play | 'r' to Reset", (10, annotated_frame.shape[0] - 10), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+        instr_text = "Press 'p' Play | 'r' Reset | 'g' Toggle Gestures | 'q' Quit"
+        cv2.putText(annotated_frame, instr_text, (10, annotated_frame.shape[0] - 10), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
 
         # Display Result
         cv2.imshow('Emotion Recognition', annotated_frame)
@@ -223,6 +224,9 @@ def run_webcam_emotion_recognition():
 
         if key == ord('q'):
             break
+        elif key == ord('g'):
+            gestures_enabled = not gestures_enabled
+            print(f"\n[CONTROL] Hand Gestures: {'ENABLED' if gestures_enabled else 'DISABLED'}")
         elif key == ord('h'):
             manual_emotion = "happy"
             print("\n[DEMO OVERRIDE] Manual emotion set to: HAPPY")
