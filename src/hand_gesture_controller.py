@@ -99,6 +99,17 @@ class HandGestureController:
         if landmarks:
             finger_states = self.get_finger_states(landmarks)
             gesture = self.classify_gesture(finger_states)
+            
+            # Cooldown logic: Only return a gesture if enough time has passed
+            current_time = time.time()
+            if gesture != "none" and gesture != "unknown":
+                if current_time - self.last_trigger_time > self.cooldown_seconds:
+                    self.last_trigger_time = current_time
+                    self.last_gesture = gesture
+                    return gesture, landmarks
+                else:
+                    return f"{gesture} (cooldown)", landmarks
+            
             return gesture, landmarks
         
         return "none", None
@@ -111,20 +122,29 @@ if __name__ == "__main__":
     print("--- Hand Gesture Controller Test ---")
     print("Commands: 'q' to quit")
     
+    prev_time = 0
+    
     while cap.isOpened():
         success, frame = cap.read()
         if not success:
             break
             
+        # FPS Calculation
+        curr_time = time.time()
+        fps = 1 / (curr_time - prev_time) if (curr_time - prev_time) > 0 else 0
+        prev_time = curr_time
+        
         gesture, landmarks = controller.get_gesture(frame)
         
         if landmarks:
-            # Optional: Simple terminal output for verification
-            if gesture != "unknown":
-                print(f"Detected Gesture: {gesture.upper()}")
+            # Draw landmarks in test mode
+            # Implementation of drawing landmarks...
+            pass
                 
         cv2.putText(frame, f"Gesture: {gesture}", (10, 50), 
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        cv2.putText(frame, f"FPS: {int(fps)}", (10, 90), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
         
         cv2.imshow('Gesture Test', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
