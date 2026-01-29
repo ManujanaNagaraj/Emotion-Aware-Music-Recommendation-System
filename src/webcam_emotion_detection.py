@@ -236,38 +236,28 @@ def run_webcam_emotion_recognition():
                     cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
 
         # Display Result
+        # --- NEW: Action Popup Notification ---
+        if popup_message and time.time() - popup_time < 2.0:
+            # Draw semi-transparent background for popup
+            overlay = annotated_frame.copy()
+            cv2.rectangle(overlay, (0, 0), (annotated_frame.shape[1], 50), (0, 255, 0), -1)
+            cv2.addWeighted(overlay, 0.3, annotated_frame, 0.7, 0, annotated_frame)
+            cv2.putText(annotated_frame, popup_message, (annotated_frame.shape[1]//2 - 100, 35), 
+                        cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 2)
+
         cv2.imshow('Emotion Recognition', annotated_frame)
 
         # Exit Strategy
         key = cv2.waitKey(1) & 0xFF
         
         # --- NEW: Map Gestures to Actions ---
-        if gesture == "open_palm":
-            emotion_to_play = get_effective_emotion(current_emotion, current_confidence, is_smiling)
-            print(f"\n[GESTURE] OPEN_PALM -> Triggering Spotify: {emotion_to_play}")
-            open_playlist_for_emotion(emotion_to_play)
-        
-        elif gesture == "point_right" or gesture == "point_right (cooldown)":
-            if "cooldown" not in gesture:
-                emotions = ["happy", "sad", "angry", "calm"]
-                idx = emotions.index(manual_emotion) if manual_emotion in emotions else -1
-                manual_emotion = emotions[(idx + 1) % len(emotions)]
-                print(f"\n[GESTURE] POINT_RIGHT -> Next Emotion: {manual_emotion}")
-        
-        elif gesture == "point_left" or gesture == "point_left (cooldown)":
-            if "cooldown" not in gesture:
-                emotions = ["happy", "sad", "angry", "calm"]
-                idx = emotions.index(manual_emotion) if manual_emotion in emotions else 0
-                manual_emotion = emotions[(idx - 1) % len(emotions)]
-                print(f"\n[GESTURE] POINT_LEFT -> Prev Emotion: {manual_emotion}")
-        
-        elif gesture == "fist":
-            manual_emotion = None
-            print("\n[GESTURE] FIST -> Resetting to Auto Mode")
-        
-        elif gesture == "two_fingers":
-            print(f"\n[GESTURE] TWO_FINGERS -> Shuffling {current_emotion} playlist")
-            open_playlist_for_emotion(current_emotion)
+        if gesture != "none" and "cooldown" not in gesture:
+            manual_emotion, msg = handle_gesture_action(
+                gesture, current_emotion, current_confidence, is_smiling, manual_emotion
+            )
+            if msg:
+                popup_message = msg
+                popup_time = time.time()
 
         if key == ord('q'):
             break
