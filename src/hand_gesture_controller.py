@@ -100,9 +100,9 @@ class HandGestureController:
             self._is_finger_open(landmarks, 20)   # Pinky
         ]
 
-    def classify_gesture(self, finger_states: List[bool]) -> str:
+    def classify_gesture(self, finger_states: List[bool], landmarks: List[Tuple]) -> str:
         """
-        Maps a list of finger booleans to a gesture string.
+        Maps a list of finger booleans and landmarks to a gesture string.
         """
         open_count = sum(finger_states)
         thumb_open, index_open, middle_open, ring_open, pinky_open = finger_states
@@ -121,11 +121,15 @@ class HandGestureController:
 
         # 4. Pointing Logic (👉/👈): Only Index finger up
         if open_count == 1 and index_open:
-            # We use the X-coordinate of the Index Tip (8) vs Index MCP (5)
-            # Note: MediaPipe X increases from Left to Right (0.0 to 1.0)
-            # Wait, I need landmarks for this. Passing finger_states isn't enough.
-            # I will refactor to pass landmarks to classify_gesture.
-            return "pointing"
+            index_tip_x = landmarks[8][0]
+            index_mcp_x = landmarks[5][0]
+            
+            # Point Right: Tip is further right than MCP
+            if index_tip_x > index_mcp_x + 0.05: # threshold for intent
+                return "point_right"
+            # Point Left: Tip is further left than MCP
+            elif index_tip_x < index_mcp_x - 0.05:
+                return "point_left"
             
         return "unknown"
 
@@ -142,7 +146,7 @@ class HandGestureController:
         
         if landmarks:
             finger_states = self.get_finger_states(landmarks)
-            gesture = self.classify_gesture(finger_states)
+            gesture = self.classify_gesture(finger_states, landmarks)
             
             # Diagnostic for terminal debug
             if self.terminal_debug:
