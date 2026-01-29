@@ -227,8 +227,14 @@ def run_webcam_emotion_recognition():
                 cv2.putText(annotated_frame, label_text, (10, 120), 
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, color_hand, 2)
         elif gestures_enabled and len(faces) == 0:
-            cv2.putText(annotated_frame, "GESTURES SUSPENDED (NO FACE)", (10, 120), 
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+            # Draw translucent red bar for suspended status
+            sub_rect = annotated_frame[100:140, 0:350] # Region where HAND label or warning appears
+            red_rect = np.full(sub_rect.shape, (50, 50, 150), dtype=np.uint8)
+            res = cv2.addWeighted(sub_rect, 0.7, red_rect, 0.3, 0)
+            annotated_frame[100:140, 0:350] = res
+            
+            cv2.putText(annotated_frame, "HAND GESTURES SUSPENDED (NO FACE)", (10, 125), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (100, 100, 255), 1)
         
         # Display Gesture Toggle Status
         status_color = (0, 255, 0) if gestures_enabled else (100, 100, 100)
