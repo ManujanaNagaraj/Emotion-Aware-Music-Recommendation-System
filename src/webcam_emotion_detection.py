@@ -121,7 +121,7 @@ def run_webcam_emotion_recognition():
                 # Determine emotion with fallback logic
                 emotion_to_play = get_effective_emotion(current_emotion, current_confidence)
                 
-                print(f"[ACTION] Opening Spotify for: {emotion_to_play}")
+                print(f"[ACTION] Launching Spotify (App/Web) for: {emotion_to_play}")
                 open_playlist_for_emotion(emotion_to_play)
             else:
                 print("\n[WARNING] 'p' pressed but no emotion detected yet.")
