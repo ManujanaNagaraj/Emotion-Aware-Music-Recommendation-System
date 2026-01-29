@@ -37,6 +37,38 @@ def get_effective_emotion(detected_emotion, confidence, is_smiling=False):
     
     return effective
 
+def handle_gesture_action(gesture, current_emotion, current_confidence, is_smiling, manual_emotion):
+    """
+    Processes actions based on detected gesture and returns (updated_manual_emotion, action_message)
+    """
+    action_message = ""
+    emotions = ["happy", "sad", "angry", "calm"]
+    
+    if gesture == "open_palm":
+        emotion_to_play = get_effective_emotion(current_emotion, current_confidence, is_smiling)
+        open_playlist_for_emotion(emotion_to_play)
+        action_message = f"PLAYING {emotion_to_play.upper()}"
+    
+    elif gesture == "point_right":
+        idx = emotions.index(manual_emotion) if manual_emotion in emotions else -1
+        manual_emotion = emotions[(idx + 1) % len(emotions)]
+        action_message = f"SET TO {manual_emotion.upper()}"
+    
+    elif gesture == "point_left":
+        idx = emotions.index(manual_emotion) if manual_emotion in emotions else 0
+        manual_emotion = emotions[(idx - 1) % len(emotions)]
+        action_message = f"SET TO {manual_emotion.upper()}"
+    
+    elif gesture == "fist":
+        manual_emotion = None
+        action_message = "RESET TO AUTO"
+        
+    elif gesture == "two_fingers":
+        open_playlist_for_emotion(current_emotion)
+        action_message = "SHUFFLING PLAYLIST"
+        
+    return manual_emotion, action_message
+
 def run_webcam_emotion_recognition():
     """
     Captures video from the webcam, detects faces, predicts emotions, 
