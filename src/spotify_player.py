@@ -30,9 +30,11 @@ def open_playlist_for_emotion(emotion: str) -> None:
 
     playlist_id = EMOTION_PLAYLISTS[emotion]
     playlist_url = get_playlist_url(playlist_id)
+    playlist_uri = get_playlist_uri(playlist_id)
     
-    print(f"\n>>> Opening {emotion.upper()} playlist...")
-    print(f">>> URL: {playlist_url}")
+    print(f"\n>>> Preparing {emotion.upper()} playlist...")
+    print(f">>> App URI: {playlist_uri}")
+    print(f">>> Web URL: {playlist_url}")
     
     try:
         webbrowser.open(playlist_url)
