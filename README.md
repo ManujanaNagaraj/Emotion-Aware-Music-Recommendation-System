@@ -24,6 +24,13 @@ The project follows a modular pipeline to deliver real-time recommendations:
 - **Real-time Emotion Recognition**: Continuous monitoring and classification of facial expressions.
 - **Emotion-Aware Mapping**: Specialized playlists curated for specific emotional states.
 - **User-Controlled Redirection**: Trigger playlists only when you want them. The system intelligently switches between the Desktop App and Browser for maximum reliability.
+- **Touchless Gesture Control**: (New) Integrated MediaPipe Hands for gesture-based playlist navigation.
+
+## 🗺 System Roadmap (Gesture Control)
+1. **Architecture**: Parallel inference for Face (Emotion) and Hand (Gesture).
+2. **Detection**: Real-time 21-point landmark extraction using MediaPipe.
+3. **Logic**: Deterministic finger counting for robust action triggers.
+4. **Safety**: Input debounce and visual confirmation to prevent accidental triggers.
 - **Modular Design**: Clean separation between inference, configuration, and playback logic.
 
 ## 🚀 How to Run the Project
