@@ -16,3 +16,14 @@ class HandGestureController:
             min_tracking_confidence=0.5
         )
         self.mp_draw = mp.solutions.drawing_utils
+
+    def _extract_landmarks(self, frame_rgb) -> Optional[List[Tuple[float, float, float]]]:
+        """
+        Processes frame and returns a list of landmark coordinates (x, y, z).
+        """
+        results = self.hands.process(frame_rgb)
+        if results.multi_hand_landmarks:
+            # We only support one hand for this demo
+            hand_landmarks = results.multi_hand_landmarks[0]
+            return [(lm.x, lm.y, lm.z) for lm in hand_landmarks.landmark]
+        return None
