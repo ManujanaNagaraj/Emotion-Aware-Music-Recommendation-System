@@ -115,9 +115,11 @@ def run_webcam_emotion_recognition():
                     old_emotion = emotion_to_play
                     emotion_to_play = "calm"
                     reason = "Unknown emotion" if old_emotion == "unknown" else f"Low confidence ({current_confidence:.2f})"
-                    print(f"[FALLBACK] {reason} detected, defaulting to: {emotion_to_play}")
+                    print(f"\n[DEMO FALLBACK] {reason} detected. Defaulting to: '{emotion_to_play}'")
+                else:
+                    print(f"\n[MATCH] Confidence {current_confidence:.2f} above threshold. Using: '{emotion_to_play}'")
                 
-                print(f"\n[USER ACTION] 'p' pressed. Triggering recommendation for: {emotion_to_play}")
+                print(f"[ACTION] Opening Spotify for: {emotion_to_play}")
                 open_playlist_for_emotion(emotion_to_play)
             else:
                 print("\n[WARNING] 'p' pressed but no emotion detected yet.")
