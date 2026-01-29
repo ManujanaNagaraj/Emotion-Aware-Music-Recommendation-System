@@ -175,10 +175,14 @@ if __name__ == "__main__":
                     controller.mp_draw.draw_landmarks(
                         frame, hand_lms, controller.mp_hands.HAND_CONNECTIONS)
                 
-        cv2.putText(frame, f"Gesture: {gesture}", (10, 50), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        cv2.putText(frame, f"FPS: {int(fps)}", (10, 90), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 1)
+        cv2.putText(frame, f"Gesture: {gesture.upper()}", (10, 40), 
+                    cv2.FONT_HERSHEY_DUPLEX, 1.2, (0, 255, 255), 2)
+        cv2.putText(frame, f"FPS: {int(fps)}", (10, 70), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
+        
+        # Display small instructions
+        cv2.putText(frame, "Touchless Demo Mode | Press 'q' to exit", (10, frame.shape[0] - 10), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
         
         cv2.imshow('Gesture Test', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
