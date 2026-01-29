@@ -189,7 +189,7 @@ def run_webcam_emotion_recognition():
         if gestures_enabled and len(faces) > 0:
             gesture, h_landmarks = gesture_controller.get_gesture(frame)
             
-            if h_landmarks:
+            if h_landmarks and draw_landmarks:
                 # Draw Hand Landmarks visually on the annotated frame
                 results = gesture_controller.hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
                 if results.multi_hand_landmarks:
