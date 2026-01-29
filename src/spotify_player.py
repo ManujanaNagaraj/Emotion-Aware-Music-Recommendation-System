@@ -55,4 +55,10 @@ if __name__ == "__main__":
     print(f"Mapped emotions: {available_emotions}")
     
     user_emotion = input("\nEnter an emotion to play music: ").strip()
+    if user_emotion in EMOTION_PLAYLISTS:
+        pl_id = EMOTION_PLAYLISTS[user_emotion]
+        print(f"Target ID: {pl_id}")
+        print(f"Target URI: {get_playlist_uri(pl_id)}")
+        print(f"Target URL: {get_playlist_url(pl_id)}")
+    
     open_playlist_for_emotion(user_emotion)
