@@ -208,6 +208,11 @@ def run_webcam_emotion_recognition():
             gesture, h_landmarks = gesture_controller.get_gesture(frame)
             
             if h_landmarks and draw_landmarks:
+                # Draw wrist dot for tracking confirmation
+                h, w, _ = frame.shape
+                wrist = h_landmarks[0]
+                cv2.circle(annotated_frame, (int(wrist[0]*w), int(wrist[1]*h)), 8, (0, 255, 0), -1)
+                
                 # Draw Hand Landmarks visually on the annotated frame
                 results = gesture_controller.hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
                 if results.multi_hand_landmarks:
@@ -273,9 +278,7 @@ def run_webcam_emotion_recognition():
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 1)
         
         # Display Instructions on frame
-        instr_text = "Press 'p' Play | 'r' Reset | 'g' Toggle Gestures | 'q' Quit"
-        cv2.putText(annotated_frame, instr_text, (10, annotated_frame.shape[0] - 10), 
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
+        draw_instructions(annotated_frame, gestures_enabled, draw_landmarks)
 
         # Display Result
         # --- NEW: Action Popup Notification ---
