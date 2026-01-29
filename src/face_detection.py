@@ -72,6 +72,28 @@ class FaceDetector:
         # Convert result to list of tuples for consistency
         return [tuple(f) for f in faces]
 
+    def detect_smile(self, roi_gray) -> bool:
+        """
+        Detects if a smile is present in the provided grayscale region.
+        
+        Args:
+            roi_gray (numpy.ndarray): The grayscale region of a detected face.
+            
+        Returns:
+            bool: True if a smile is detected, False otherwise.
+        """
+        if roi_gray is None or roi_gray.size == 0:
+            return False
+
+        # Detect smiles
+        smiles = self.smile_cascade.detectMultiScale(
+            roi_gray,
+            scaleFactor=1.7,
+            minNeighbors=22,
+            minSize=(25, 25)
+        )
+        return len(smiles) > 0
+
 if __name__ == "__main__":
     # Internal test/demo logic
     try:
