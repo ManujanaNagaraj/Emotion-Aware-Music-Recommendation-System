@@ -205,9 +205,13 @@ def run_webcam_emotion_recognition():
                 manual_emotion = emotions[(idx - 1) % len(emotions)]
                 print(f"\n[GESTURE] POINT_LEFT -> Prev Emotion: {manual_emotion}")
         
+        elif gesture == "fist":
+            manual_emotion = None
+            print("\n[GESTURE] FIST -> Resetting to Auto Mode")
+        
         elif gesture == "two_fingers":
             print(f"\n[GESTURE] TWO_FINGERS -> Shuffling {current_emotion} playlist")
-            open_playlist_for_emotion(current_emotion) # Simplification: Just re-open
+            open_playlist_for_emotion(current_emotion)
 
         if key == ord('q'):
             break
