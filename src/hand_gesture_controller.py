@@ -36,3 +36,25 @@ class HandGestureController:
         # For non-thumb fingers, tip Y should be smaller (higher on screen) than PIP joint Y
         # PIP joints are at tip_idx - 2 (Approximate MediaPipe indexing)
         return landmarks[finger_tip_idx][1] < landmarks[finger_tip_idx - 2][1]
+
+    def _is_thumb_open(self, landmarks: List[Tuple]) -> bool:
+        """
+        Special detection for thumb which typically moves horizontally.
+        Tip=4, IP Joint=3, MCP Joint=2
+        """
+        # For a right hand facing camera, thumb tip X should be smaller than MCP X 
+        # (This varies by hand orientation, but we'll use a simple proximity check for now)
+        return abs(landmarks[4][0] - landmarks[17][0]) > abs(landmarks[3][0] - landmarks[17][0])
+
+    def get_finger_states(self, landmarks: List[Tuple]) -> List[bool]:
+        """
+        Returns a list of 5 booleans [Thumb, Index, Middle, Ring, Pinky]
+        True = Open, False = Closed
+        """
+        return [
+            self._is_thumb_open(landmarks),
+            self._is_finger_open(landmarks, 8),   # Index
+            self._is_finger_open(landmarks, 12),  # Middle
+            self._is_finger_open(landmarks, 16),  # Ring
+            self._is_finger_open(landmarks, 20)   # Pinky
+        ]
