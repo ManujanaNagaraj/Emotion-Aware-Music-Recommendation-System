@@ -139,13 +139,13 @@ class HandGestureController:
         if open_count == 2 and index_open and middle_open:
             return "two_fingers"
 
-        # 4. Pointing Logic (👉/👈): Only Index finger up
-        if open_count == 1 and index_open:
+        # 4. Pointing Logic (👉/👈): Allows 1 or 2 fingers (e.g. Index + optional Thumb)
+        if (open_count == 1 or open_count == 2) and index_open:
             index_tip_x = landmarks[8][0]
             index_mcp_x = landmarks[5][0]
             
             # Point Right: Tip is further right than MCP
-            if index_tip_x > index_mcp_x + 0.05: # threshold for intent
+            if index_tip_x > index_mcp_x + 0.05:
                 return "point_right"
             # Point Left: Tip is further left than MCP
             elif index_tip_x < index_mcp_x - 0.05:
