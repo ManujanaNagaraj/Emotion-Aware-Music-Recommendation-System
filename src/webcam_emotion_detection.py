@@ -128,6 +128,10 @@ def run_webcam_emotion_recognition():
     draw_landmarks = True   # --- NEW: Toggle for hand landmark dots ---
     popup_message = ""      # --- NEW: Toast notifications ---
     popup_time = 0
+    # --- SESSION STATS ---
+    frames_processed = 0
+    faces_detected = 0
+    hands_detected = 0
     
     # 4. Real-time Loop
     while True:
