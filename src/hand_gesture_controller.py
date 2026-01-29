@@ -16,6 +16,11 @@ class HandGestureController:
             min_tracking_confidence=0.5
         )
         self.mp_draw = mp.solutions.drawing_utils
+        
+        # Gesture Lifecycle State
+        self.last_gesture = "none"
+        self.last_trigger_time = 0
+        self.cooldown_seconds = 2.0
 
     def _extract_landmarks(self, frame_rgb) -> Optional[List[Tuple[float, float, float]]]:
         """
