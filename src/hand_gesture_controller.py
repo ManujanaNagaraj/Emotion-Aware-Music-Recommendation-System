@@ -6,6 +6,14 @@ from typing import List, Tuple, Optional
 class HandGestureController:
     """
     Handles hand landmark detection and gesture classification using MediaPipe.
+    
+    MediaPipe Landmark Indexing Reference:
+    0: Wrist
+    1-4: Thumb (MCP, IP, TIP)
+    5-8: Index (MCP, PIP, DIP, TIP)
+    9-12: Middle (MCP, PIP, DIP, TIP)
+    13-16: Ring (MCP, PIP, DIP, TIP)
+    17-20: Pinky (MCP, PIP, DIP, TIP)
     """
     def __init__(self):
         self.mp_hands = mp.solutions.hands
