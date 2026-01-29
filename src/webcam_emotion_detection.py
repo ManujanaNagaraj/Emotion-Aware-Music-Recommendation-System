@@ -61,7 +61,15 @@ def run_webcam_emotion_recognition():
 
 
     print("Webcam started.")
-    print("Commands: 'p' to open Spotify playlist for detected emotion, 'q' to quit.")
+    print("--- Emotion Recognition Dashboard (Demo Mode) ---")
+    print("Commands:")
+    print("  'p' : Open Spotify for current emotion")
+    print("  'q' : Quit application")
+    print("\nManual Overrides (for testing Sad/Angry/Happy):")
+    print("  'h' : Force HAPPY  |  's' : Force SAD")
+    print("  'a' : Force ANGRY  |  'c' : Force CALM")
+    print("  'r' : Reset to AUTO/HYBRID mode")
+    print("-" * 50)
 
     # 3. State Tracking
     current_emotion = None
