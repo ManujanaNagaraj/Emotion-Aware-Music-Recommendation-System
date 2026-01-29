@@ -6,6 +6,9 @@ from preprocessing import FacePreprocessor
 from emotion_inference import EmotionClassifier
 from spotify_player import open_playlist_for_emotion
 
+# Configuration for detection
+CONFIDENCE_THRESHOLD = 0.4  # Threshold below which emotion defaults to 'calm'
+
 def run_webcam_emotion_recognition():
     """
     Captures video from the webcam, detects faces, predicts emotions, 
