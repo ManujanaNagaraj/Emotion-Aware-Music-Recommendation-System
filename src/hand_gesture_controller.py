@@ -17,6 +17,13 @@ class HandGestureController:
     """
     Handles hand landmark detection and gesture classification using MediaPipe.
     
+    Supported Gestures:
+    - Open Palm (✋): Play current emotion playlist
+    - Fist (✊): Stop/Reset to Auto mode
+    - Point Right (👉): Next mood/track
+    - Point Left (👈): Previous mood/track
+    - Two Fingers (✌️): Shuffle/Re-open current mood
+    
     MediaPipe Landmark Indexing Reference:
     0: Wrist
     1-4: Thumb (MCP, IP, TIP)
