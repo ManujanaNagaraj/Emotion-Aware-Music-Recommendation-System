@@ -37,7 +37,8 @@ def get_effective_emotion(detected_emotion, confidence, is_smiling=False):
     
     return effective
 
-def handle_gesture_action(gesture, current_emotion, current_confidence, is_smiling, manual_emotion):
+def handle_gesture_action(gesture: str, current_emotion: str, current_confidence: float, 
+                          is_smiling: bool, manual_emotion: Optional[str]) -> Tuple[Optional[str], str]:
     """
     Processes actions based on detected gesture and returns (updated_manual_emotion, action_message)
     """
@@ -69,7 +70,7 @@ def handle_gesture_action(gesture, current_emotion, current_confidence, is_smili
         
     return manual_emotion, action_message
 
-def draw_instructions(frame, gestures_enabled, draw_landmarks):
+def draw_instructions(frame: np.ndarray, gestures_enabled: bool, draw_landmarks: bool) -> None:
     """
     Draws the system control legend at the bottom of the frame.
     """
