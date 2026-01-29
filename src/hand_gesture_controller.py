@@ -43,11 +43,15 @@ class HandGestureController:
         self.last_gesture = "none"
         self.last_trigger_time = 0
         self.cooldown_seconds = 2.0
+        self.terminal_debug = True  # Toggle for console logging
 
     def _extract_landmarks(self, frame_rgb) -> Optional[List[Tuple[float, float, float]]]:
         """
         Processes frame and returns a list of landmark coordinates (x, y, z).
         """
+        if self.hands is None:
+            return None
+            
         results = self.hands.process(frame_rgb)
         if results.multi_hand_landmarks:
             # We only support one hand for this demo
