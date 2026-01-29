@@ -69,6 +69,20 @@ def handle_gesture_action(gesture, current_emotion, current_confidence, is_smili
         
     return manual_emotion, action_message
 
+def draw_instructions(frame, gestures_enabled, draw_landmarks):
+    """
+    Draws the system control legend at the bottom of the frame.
+    """
+    instr_text = "Press 'p' Play | 'r' Reset | 'g' Toggle Gestures | 'l' Toggle Landmarks | 'q' Quit"
+    cv2.putText(frame, instr_text, (10, frame.shape[0] - 10), 
+                cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
+    
+    # Legend for gestures (if enabled)
+    if gestures_enabled:
+        legend = "\u270B:Play | \ud83d\udc49:Next | \ud83d\udc48:Prev | \u270c\ufe0f:Mood | \u270A:Stop"
+        cv2.putText(frame, legend, (10, frame.shape[0] - 70), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, (200, 200, 200), 1)
+
 def run_webcam_emotion_recognition():
     """
     Captures video from the webcam, detects faces, predicts emotions, 
@@ -215,6 +229,10 @@ def run_webcam_emotion_recognition():
                 icon = emoji_ui.get(pure_gesture, "")
                 
                 label_text = f"HAND: {pure_gesture.upper().replace('_', ' ')} {icon}"
+                # Add AI Source tag
+                cv2.rectangle(annotated_frame, (10, 100), (60, 115), (0, 255, 0), -1)
+                cv2.putText(annotated_frame, "AI", (20, 112), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1)
+                
                 color_hand = (255, 255, 0)
                 
                 if "cooldown" in gesture:
