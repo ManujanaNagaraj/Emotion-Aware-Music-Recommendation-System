@@ -105,8 +105,9 @@ def run_webcam_emotion_recognition():
             break
         elif key == ord('p'):
             if current_emotion:
-                print(f"\n[USER ACTION] 'p' pressed. Triggering recommendation for: {current_emotion}")
-                open_playlist_for_emotion(current_emotion)
+                emotion_to_play = current_emotion
+                print(f"\n[USER ACTION] 'p' pressed. Triggering recommendation for: {emotion_to_play}")
+                open_playlist_for_emotion(emotion_to_play)
             else:
                 print("\n[WARNING] 'p' pressed but no emotion detected yet.")
 
