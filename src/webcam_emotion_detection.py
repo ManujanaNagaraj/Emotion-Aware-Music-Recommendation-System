@@ -65,7 +65,7 @@ def handle_gesture_action(gesture, current_emotion, current_confidence, is_smili
         
     elif gesture == "two_fingers":
         open_playlist_for_emotion(current_emotion)
-        action_message = "SHUFFLING PLAYLIST"
+        action_message = f"SHUFFLING {current_emotion.upper()} MOOD ✌️"
         
     return manual_emotion, action_message
 
@@ -260,10 +260,16 @@ def run_webcam_emotion_recognition():
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (100, 100, 255), 1)
         
         # Display Gesture Toggle Status
-        status_color = (0, 255, 0) if gestures_enabled else (100, 100, 100)
-        status_text = "ENABLED" if gestures_enabled else "DISABLED ('g' to toggle)"
+        status_color = (0, 255, 0) if gestures_enabled else (255, 100, 100)
+        status_text = "ENABLED" if gestures_enabled else "DISABLED"
         cv2.putText(annotated_frame, f"GESTURES: {status_text}", (10, annotated_frame.shape[0] - 50), 
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, status_color, 1)
+
+        if not gestures_enabled:
+            # Draw banner for Keyboard Only mode
+            cv2.rectangle(annotated_frame, (0, annotated_frame.shape[0]-95), (150, annotated_frame.shape[0]-75), (255, 0, 0), -1)
+            cv2.putText(annotated_frame, "KEYBOARD ONLY", (10, annotated_frame.shape[0]-80), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1)
 
         l_color = (0, 255, 255) if draw_landmarks else (100, 100, 100)
         l_text = "SHOWING" if draw_landmarks else "HIDDEN ('l' to toggle)"
