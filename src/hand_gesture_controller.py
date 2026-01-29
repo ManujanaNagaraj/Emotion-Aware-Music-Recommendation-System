@@ -45,6 +45,13 @@ class HandGestureController:
         self.cooldown_seconds = 2.0
         self.terminal_debug = True  # Toggle for console logging
 
+    def release(self):
+        """
+        Properly releases MediaPipe resources.
+        """
+        if self.hands:
+            self.hands.close()
+
     def _extract_landmarks(self, frame_rgb) -> Optional[List[Tuple[float, float, float]]]:
         """
         Processes frame and returns a list of landmark coordinates (x, y, z).
