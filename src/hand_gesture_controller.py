@@ -31,7 +31,7 @@ class HandGestureController:
             self.hands = self.mp_hands.Hands(
                 static_image_mode=False,
                 max_num_hands=1,
-                min_detection_confidence=0.7,
+                min_detection_confidence=0.5,
                 min_tracking_confidence=0.5
             )
             self.mp_draw = mp.solutions.drawing_utils
@@ -105,8 +105,8 @@ class HandGestureController:
         """
         open_count = sum(finger_states)
         
-        # 1. Open Palm: All 5 fingers up
-        if open_count == 5:
+        # 1. Open Palm: All fingers up (Relaxed to 4 or 5 for easier demo)
+        if open_count >= 4:
             return "open_palm"
             
         # 2. Fist: All 5 fingers down
@@ -137,6 +137,12 @@ class HandGestureController:
         if landmarks:
             finger_states = self.get_finger_states(landmarks)
             gesture = self.classify_gesture(finger_states)
+            
+            # Diagnostic for terminal debug
+            if self.terminal_debug:
+                f_names = ["Thumb", "Index", "Middle", "Ring", "Pinky"]
+                active = [f_names[i] for i, s in enumerate(finger_states) if s]
+                print(f"[DEBUG] Open Fingers: {active} | Count: {sum(finger_states)}")
             
             # Cooldown logic: Only return a gesture if enough time has passed
             current_time = time.time()
