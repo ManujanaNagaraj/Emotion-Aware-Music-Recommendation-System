@@ -9,6 +9,9 @@ Configuration instructions:
 1. Playlist IDs can be found in the Spotify Share URL (e.g., https://open.spotify.com/playlist/37i9dQZF1DXdPec7WLTmlr?...)
    The ID is the alphanumeric string between 'playlist/' and the '?'.
 2. Replace the placeholder IDs in the `EMOTION_PLAYLISTS` dictionary with your preferred IDs.
+
+**Demo Tip**: On Windows, using the URI scheme `spotify:playlist:ID` will prompt to open the Desktop App.
+   Check 'Always allow' in your browser to make this seamless for the demo.
 """
 
 from typing import Dict
