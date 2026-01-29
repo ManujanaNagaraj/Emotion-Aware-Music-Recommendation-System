@@ -90,12 +90,24 @@ def run_webcam_emotion_recognition():
                 roi_gray = cv2.cvtColor(frame[y:y+h, x:x+w], cv2.COLOR_BGR2GRAY)
                 is_smiling = detector.detect_smile(roi_gray)
                 
+                # Hybrid Logic: If the model says 'unknown' but the user is smiling, force 'happy'
+                if label == "unknown" and is_smiling:
+                    label = "happy"
+                    confidence = 0.95 # Simulated confidence for hybrid mode
+                
+                # Manual Override: If a manual emotion is set, it takes priority
+                if manual_emotion:
+                    label = manual_emotion
+                    confidence = 1.0
+                
                 # Update current detected emotion
                 current_emotion = label
                 current_confidence = confidence
                 
                 # Format Label Text
-                text = f"{label}: {confidence:.2f}"
+                hybrid_tag = " (Hybrid)" if is_smiling and not manual_emotion else ""
+                manual_tag = " (Manual)" if manual_emotion else ""
+                text = f"{label}{hybrid_tag}{manual_tag}: {confidence:.2f}"
                 
                 # Color Coding (Optional: Change color based on emotion)
                 color = (0, 255, 0) # Green for all by default
