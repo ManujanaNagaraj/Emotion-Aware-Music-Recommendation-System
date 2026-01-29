@@ -4,6 +4,7 @@ import numpy as np
 from face_detection import FaceDetector
 from preprocessing import FacePreprocessor
 from emotion_inference import EmotionClassifier
+from spotify_player import open_playlist_for_emotion
 
 def run_webcam_emotion_recognition():
     """
@@ -28,9 +29,14 @@ def run_webcam_emotion_recognition():
         print("Error: Could not open webcam.")
         return
 
-    print("Webcam started. Press 'q' to quit.")
 
-    # 3. Real-time Loop
+    print("Webcam started.")
+    print("Commands: 'p' to open Spotify playlist for detected emotion, 'q' to quit.")
+
+    # 3. State Tracking
+    current_emotion = None
+    
+    # 4. Real-time Loop
     while True:
         # Capture frame-by-frame
         ret, frame = cap.read()
@@ -60,6 +66,9 @@ def run_webcam_emotion_recognition():
                 # C. Predict Emotion
                 label, confidence = classifier.predict(processed_face)
                 
+                # Update current detected emotion
+                current_emotion = label
+                
                 # Format Label Text
                 text = f"{label}: {confidence:.2f}"
                 
@@ -86,8 +95,15 @@ def run_webcam_emotion_recognition():
         cv2.imshow('Emotion Recognition', annotated_frame)
 
         # Exit Strategy
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
             break
+        elif key == ord('p'):
+            if current_emotion:
+                print(f"\n[USER ACTION] 'p' pressed. Triggering recommendation for: {current_emotion}")
+                open_playlist_for_emotion(current_emotion)
+            else:
+                print("\n[WARNING] 'p' pressed but no emotion detected yet.")
 
     # Cleanup
     cap.release()
