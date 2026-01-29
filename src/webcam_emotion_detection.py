@@ -186,7 +186,7 @@ def run_webcam_emotion_recognition():
 
         # --- NEW: Hand Gesture Detection ---
         gesture = "none"
-        if gestures_enabled:
+        if gestures_enabled and len(faces) > 0:
             gesture, h_landmarks = gesture_controller.get_gesture(frame)
             
             if h_landmarks:
@@ -211,11 +211,20 @@ def run_webcam_emotion_recognition():
                 icon = emoji_ui.get(pure_gesture, "")
                 
                 label_text = f"HAND: {pure_gesture.upper().replace('_', ' ')} {icon}"
+                color_hand = (255, 255, 0)
+                
                 if "cooldown" in gesture:
-                    label_text += " (WAIT)"
+                    label_text += " (LOCKED)"
+                    color_hand = (50, 50, 150)
+                    # Draw tiny Progress Bar for cooldown
+                    cv2.rectangle(annotated_frame, (10, 135), (110, 140), (50, 50, 50), -1)
+                    cv2.rectangle(annotated_frame, (10, 135), (60, 140), (0, 165, 255), -1)
                 
                 cv2.putText(annotated_frame, label_text, (10, 120), 
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, color_hand, 2)
+        elif gestures_enabled and len(faces) == 0:
+            cv2.putText(annotated_frame, "GESTURES SUSPENDED (NO FACE)", (10, 120), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         
         # Display Gesture Toggle Status
         status_color = (0, 255, 0) if gestures_enabled else (100, 100, 100)
