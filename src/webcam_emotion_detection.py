@@ -207,11 +207,13 @@ def run_webcam_emotion_recognition():
                 color = (0, 0, 255)
 
             # D. Draw Annotations
+            # Use color based on emotion (simplified to 'gesture' color for now)
+            color = UI_COLORS["gesture"] if effective != "unknown" else UI_COLORS["warning"]
+            
             # Rectangle around face
             cv2.rectangle(annotated_frame, (x, y), (x + w, y + h), color, 2)
             
             # Label above face
-            # Ensure text doesn't go off-screen at the top
             text_y = y - 10 if y - 10 > 10 else y + h + 20
             cv2.putText(annotated_frame, text, (x, text_y), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
