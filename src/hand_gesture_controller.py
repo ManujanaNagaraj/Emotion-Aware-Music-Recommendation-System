@@ -1,3 +1,13 @@
+"""
+Hand Gesture Controller Module
+Enables touchless control of the music system using MediaPipe Hands.
+
+Example:
+    controller = HandGestureController()
+    gesture, landmarks = controller.get_gesture(frame)
+    if gesture == "open_palm":
+        # Trigger action
+"""
 import cv2
 import mediapipe as mp
 import time
