@@ -7,7 +7,7 @@ based on detected emotions, using the configuration defined in `spotify_config.p
 
 import webbrowser
 import logging
-from spotify_config import EMOTION_PLAYLISTS, get_playlist_url
+from spotify_config import EMOTION_PLAYLISTS, get_playlist_url, get_playlist_uri
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
