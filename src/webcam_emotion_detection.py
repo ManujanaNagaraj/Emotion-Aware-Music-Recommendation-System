@@ -153,20 +153,28 @@ def run_webcam_emotion_recognition():
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
         # --- NEW: Hand Gesture Detection ---
-        gesture, h_landmarks = gesture_controller.get_gesture(frame)
+        gesture = "none"
+        if gestures_enabled:
+            gesture, h_landmarks = gesture_controller.get_gesture(frame)
+            
+            if h_landmarks:
+                # Draw Hand Landmarks visually on the annotated frame
+                results = gesture_controller.hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+                if results.multi_hand_landmarks:
+                    for hand_lms in results.multi_hand_landmarks:
+                        gesture_controller.mp_draw.draw_landmarks(
+                            annotated_frame, hand_lms, gesture_controller.mp_hands.HAND_CONNECTIONS)
+            
+            # Display Gesture Indicator
+            if gesture != "none" and gesture != "unknown":
+                cv2.putText(annotated_frame, f"HAND: {gesture.upper().replace('_', ' ')}", (10, 120), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
         
-        if h_landmarks:
-            # Draw Hand Landmarks visually on the annotated frame
-            results = gesture_controller.hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-            if results.multi_hand_landmarks:
-                for hand_lms in results.multi_hand_landmarks:
-                    gesture_controller.mp_draw.draw_landmarks(
-                        annotated_frame, hand_lms, gesture_controller.mp_hands.HAND_CONNECTIONS)
-        
-        # Display Gesture Indicator
-        if gesture != "none":
-            cv2.putText(annotated_frame, f"HAND: {gesture.upper().replace('_', ' ')}", (10, 90), 
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
+        # Display Gesture Toggle Status
+        status_color = (0, 255, 0) if gestures_enabled else (100, 100, 100)
+        status_text = "ENABLED" if gestures_enabled else "DISABLED ('g' to toggle)"
+        cv2.putText(annotated_frame, f"GESTURES: {status_text}", (10, annotated_frame.shape[0] - 50), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, status_color, 1)
 
         # --- Global Overrides & Indicators ---
         if manual_emotion:
