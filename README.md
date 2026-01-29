@@ -18,12 +18,12 @@ The project follows a modular pipeline to deliver real-time recommendations:
 - **Computer Vision**: OpenCV
 - **Deep Learning**: TensorFlow / Keras (CNN Architecture)
 - **Signal Processing**: NumPy, Pandas (for data handling)
-- **Integration**: Python `webbrowser` module for Spotify redirection
+- **Integration**: Python `webbrowser` module for **Dual Spotify Redirection** (Native App + Web).
 
 ## ✨ Key Features
 - **Real-time Emotion Recognition**: Continuous monitoring and classification of facial expressions.
 - **Emotion-Aware Mapping**: Specialized playlists curated for specific emotional states.
-- **User-Controlled Redirection**: Trigger Spotify playlists only when you want them, maintaining full control over the browsing experience.
+- **User-Controlled Redirection**: Trigger playlists only when you want them. The system intelligently switches between the Desktop App and Browser for maximum reliability.
 - **Modular Design**: Clean separation between inference, configuration, and playback logic.
 
 ## 🚀 How to Run the Project
