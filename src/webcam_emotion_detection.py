@@ -147,6 +147,9 @@ def run_webcam_emotion_recognition():
         elif key == ord('c'):
             manual_emotion = "calm"
             print("\n[DEMO OVERRIDE] Manual emotion set to: CALM")
+        elif key == ord('r'):
+            manual_emotion = None
+            print("\n[DEMO RESET] Overrides cleared. System in AUTO/HYBRID mode.")
         elif key == ord('p'):
             if current_emotion:
                 # Determine emotion with fallback logic
