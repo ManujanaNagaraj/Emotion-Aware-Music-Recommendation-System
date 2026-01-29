@@ -58,3 +58,27 @@ class HandGestureController:
             self._is_finger_open(landmarks, 16),  # Ring
             self._is_finger_open(landmarks, 20)   # Pinky
         ]
+
+    def classify_gesture(self, finger_states: List[bool]) -> str:
+        """
+        Maps a list of finger booleans to a gesture string.
+        """
+        open_count = sum(finger_states)
+        
+        # 1. Open Palm: All 5 fingers up
+        if open_count == 5:
+            return "open_palm"
+            
+        # 2. Fist: All 5 fingers down
+        if open_count == 0:
+            return "fist"
+            
+        # 3. Two Fingers (Victory/Next): Index and Middle up
+        if open_count == 2 and finger_states[1] and finger_states[2]:
+            return "two_fingers"
+            
+        # 4. Thumb Up: Only thumb is up
+        if open_count == 1 and finger_states[0]:
+            return "thumb_up"
+            
+        return "unknown"
