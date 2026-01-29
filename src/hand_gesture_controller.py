@@ -27,3 +27,12 @@ class HandGestureController:
             hand_landmarks = results.multi_hand_landmarks[0]
             return [(lm.x, lm.y, lm.z) for lm in hand_landmarks.landmark]
         return None
+
+    def _is_finger_open(self, landmarks: List[Tuple], finger_tip_idx: int) -> bool:
+        """
+        Determines if a finger is open by comparing tip height with PIP joint height.
+        Tip landmarks: Index=8, Middle=12, Ring=16, Pinky=20
+        """
+        # For non-thumb fingers, tip Y should be smaller (higher on screen) than PIP joint Y
+        # PIP joints are at tip_idx - 2 (Approximate MediaPipe indexing)
+        return landmarks[finger_tip_idx][1] < landmarks[finger_tip_idx - 2][1]
