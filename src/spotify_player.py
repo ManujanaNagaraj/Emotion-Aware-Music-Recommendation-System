@@ -37,8 +37,15 @@ def open_playlist_for_emotion(emotion: str) -> None:
     print(f">>> Web URL: {playlist_url}")
     
     try:
-        webbrowser.open(playlist_url)
-        logger.info(f"Successfully triggered browser to open {emotion} playlist.")
+        # 1. Attempt to open in Desktop App (URI)
+        # Note: webbrowser.open returns True if successful, but for URIs it mostly just triggers the command.
+        print(f">>> Attempting to launch Spotify Desktop App...")
+        webbrowser.open(playlist_uri)
+        logger.info(f"Triggered Spotify App for {emotion}.")
+        
+        # 2. Also provide the Web URL as a fallback if the app doesn't open
+        print(f">>> If the app didn't open, use the Web Link: {playlist_url}")
+        
     except Exception as e:
         logger.error(f"Failed to open browser: {e}")
 
