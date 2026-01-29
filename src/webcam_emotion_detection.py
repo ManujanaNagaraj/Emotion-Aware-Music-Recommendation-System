@@ -107,7 +107,10 @@ def run_webcam_emotion_recognition():
             if current_emotion:
                 emotion_to_play = current_emotion
                 
-                # Check for "unknown" or low confidence fallback
+                # Fallback Mechanism:
+                # This ensures the system remains demo-ready even if the model is not fully trained 
+                # or returns low-confidence predictions. We default to 'calm' to provide a 
+                # smooth user experience without affecting face detection or the display feed.
                 if emotion_to_play == "unknown" or current_confidence < CONFIDENCE_THRESHOLD:
                     old_emotion = emotion_to_play
                     emotion_to_play = "calm"
