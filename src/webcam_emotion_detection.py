@@ -38,6 +38,7 @@ def run_webcam_emotion_recognition():
 
     # 3. State Tracking
     current_emotion = None
+    current_confidence = 0.0
     
     # 4. Real-time Loop
     while True:
