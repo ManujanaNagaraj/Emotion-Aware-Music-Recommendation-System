@@ -236,6 +236,11 @@ def run_webcam_emotion_recognition():
         cv2.putText(annotated_frame, f"GESTURES: {status_text}", (10, annotated_frame.shape[0] - 50), 
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, status_color, 1)
 
+        l_color = (0, 255, 255) if draw_landmarks else (100, 100, 100)
+        l_text = "SHOWING" if draw_landmarks else "HIDDEN ('l' to toggle)"
+        cv2.putText(annotated_frame, f"LANDMARKS: {l_text}", (10, annotated_frame.shape[0] - 30), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, l_color, 1)
+
         # --- Global Overrides & Indicators ---
         if manual_emotion:
             cv2.putText(annotated_frame, "DEMO MODE: MANUAL OVERRIDE ACTIVE", (10, 30), 
