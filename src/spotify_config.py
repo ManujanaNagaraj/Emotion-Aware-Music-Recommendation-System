@@ -17,10 +17,10 @@ from typing import Dict
 # Emotion labels must match those defined in src/emotion_config.py.
 # Replace these placeholders with actual Spotify playlist IDs.
 EMOTION_PLAYLISTS: Dict[str, str] = {
-    "happy": "REPLACE_WITH_HAPPY_PLAYLIST_ID",  # Example: '37i9dQZF1DXdPec7WLTmlr'
-    "sad": "REPLACE_WITH_SAD_PLAYLIST_ID",      # Example: '37i9dQZF1DX3YSRY7tZ9b3'
-    "calm": "REPLACE_WITH_CALM_PLAYLIST_ID",    # Example: '37i9dQZF1DX4sW36Cj2m2y'
-    "angry": "REPLACE_WITH_ANGRY_PLAYLIST_ID"   # Example: '37i9dQZF1DX3RxPs9vCghT'
+    "happy": "14iO0n19NQKgEI0ibuofeV",  # Example: '37i9dQZF1DXdPec7WLTmlr'
+    "sad": "0AyOLKzLZZmlliok7bu1mp",      # Example: '37i9dQZF1DX3YSRY7tZ9b3'
+    "calm": "0TOng1FTBaa6bHJcfack1S",    # Example: '37i9dQZF1DX4sW36Cj2m2y'
+    "angry": "4Ky4vveGq77DAgV3Z2Lk4e"   # Example: '37i9dQZF1DX3RxPs9vCghT'
 }
 
 def get_playlist_url(playlist_id: str) -> str:
