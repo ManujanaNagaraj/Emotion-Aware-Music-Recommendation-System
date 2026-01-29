@@ -205,11 +205,12 @@ def run_webcam_emotion_recognition():
                 
             else:
                 text = "Processing Error"
-                color = (0, 0, 255)
+                label = "unknown"
+                color = UI_COLORS["warning"]
 
             # D. Draw Annotations
-            # Use color based on emotion (simplified to 'gesture' color for now)
-            color = UI_COLORS["gesture"] if effective != "unknown" else UI_COLORS["warning"]
+            # Use color based on emotion
+            color = UI_COLORS["gesture"] if label != "unknown" else UI_COLORS["warning"]
             
             # Rectangle around face
             cv2.rectangle(annotated_frame, (x, y), (x + w, y + h), color, 2)
