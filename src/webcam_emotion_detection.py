@@ -118,19 +118,8 @@ def run_webcam_emotion_recognition():
             break
         elif key == ord('p'):
             if current_emotion:
-                emotion_to_play = current_emotion
-                
-                # Fallback Mechanism:
-                # This ensures the system remains demo-ready even if the model is not fully trained 
-                # or returns low-confidence predictions. We default to 'calm' to provide a 
-                # smooth user experience without affecting face detection or the display feed.
-                if emotion_to_play == "unknown" or current_confidence < CONFIDENCE_THRESHOLD:
-                    old_emotion = emotion_to_play
-                    emotion_to_play = "calm"
-                    reason = "Unknown emotion" if old_emotion == "unknown" else f"Low confidence ({current_confidence:.2f})"
-                    print(f"\n[DEMO FALLBACK] {reason} detected. Defaulting to: '{emotion_to_play}'")
-                else:
-                    print(f"\n[MATCH] Confidence {current_confidence:.2f} above threshold. Using: '{emotion_to_play}'")
+                # Determine emotion with fallback logic
+                emotion_to_play = get_effective_emotion(current_emotion, current_confidence)
                 
                 print(f"[ACTION] Opening Spotify for: {emotion_to_play}")
                 open_playlist_for_emotion(emotion_to_play)
