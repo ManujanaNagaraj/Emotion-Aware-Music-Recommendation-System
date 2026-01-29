@@ -1,6 +1,10 @@
 import os
 import numpy as np
-import tensorflow as tf
+try:
+    import tensorflow as tf
+    TENSORFLOW_AVAILABLE = True
+except ImportError:
+    TENSORFLOW_AVAILABLE = False
 from typing import Tuple, Optional, Union
 
 # Import configuration
@@ -29,6 +33,11 @@ class EmotionClassifier:
         
         if not os.path.exists(model_path):
             print(f"Bypass Warning: Model file not found at {model_path}. Inference will return dummies.")
+            return
+
+        if not TENSORFLOW_AVAILABLE:
+            print("[CRITICAL WARNING] TensorFlow is not installed. Inference will return 'unknown'.")
+            print("Note: TensorFlow does not yet support Python 3.13 on Windows.")
             return
 
         try:

@@ -1,3 +1,6 @@
-opencv-python
-numpy
-tensorflow
+# Note: TensorFlow currently supports Python 3.9 - 3.12. 
+# It does NOT yet support Python 3.13 on Windows.
+opencv-python>=4.5.0
+numpy>=1.19.0
+tensorflow>=2.5.0; python_version < '3.13'
+h5py>=3.1.0
