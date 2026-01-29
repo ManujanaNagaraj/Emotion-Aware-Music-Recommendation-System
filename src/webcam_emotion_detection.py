@@ -48,6 +48,7 @@ def run_webcam_emotion_recognition():
         detector = FaceDetector()
         preprocessor = FacePreprocessor(target_size=(48, 48))
         classifier = EmotionClassifier(model_path='models/emotion_cnn.h5')
+        gesture_controller = HandGestureController()
     except Exception as e:
         print(f"Error initializing components: {e}")
         return
