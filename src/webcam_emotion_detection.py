@@ -106,6 +106,12 @@ def run_webcam_emotion_recognition():
         elif key == ord('p'):
             if current_emotion:
                 emotion_to_play = current_emotion
+                
+                # Check for "unknown" fallback
+                if emotion_to_play == "unknown":
+                    emotion_to_play = "calm"
+                    print(f"[FALLBACK] Unknown emotion detected, defaulting to: {emotion_to_play}")
+                
                 print(f"\n[USER ACTION] 'p' pressed. Triggering recommendation for: {emotion_to_play}")
                 open_playlist_for_emotion(emotion_to_play)
             else:
