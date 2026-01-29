@@ -149,8 +149,10 @@ def run_webcam_emotion_recognition():
         annotated_frame = frame.copy()
 
         # A. Detect Faces
-        # Returns list of (x, y, w, h)
+        frames_processed += 1
         faces = detector.detect_faces(frame)
+        if len(faces) > 0:
+            faces_detected += 1
 
         for (x, y, w, h) in faces:
             bbox = (x, y, w, h)
@@ -210,6 +212,8 @@ def run_webcam_emotion_recognition():
         gesture = "none"
         if gestures_enabled and len(faces) > 0:
             gesture, h_landmarks = gesture_controller.get_gesture(frame)
+            if h_landmarks:
+                hands_detected += 1
             
             if h_landmarks and draw_landmarks:
                 # Draw wrist dot for tracking confirmation
