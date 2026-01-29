@@ -181,12 +181,24 @@ if __name__ == "__main__":
         gesture, landmarks = controller.get_gesture(frame)
         
         if landmarks:
+            # Draw dots on fingers classified as OPEN
+            finger_states = controller.get_finger_states(landmarks)
+            tip_ids = [4, 8, 12, 16, 20] # Thumb, Index, Middle, Ring, Pinky
+            h, w, _ = frame.shape
+            for i, is_open in enumerate(finger_states):
+                if is_open:
+                    lm = landmarks[tip_ids[i]]
+                    cv2.circle(frame, (int(lm[0]*w), int(lm[1]*h)), 10, (0, 0, 255), -1)
+
             # Draw landmarks in test mode using MediaPipe utilities
             results = controller.hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
             if results.multi_hand_landmarks:
                 for hand_lms in results.multi_hand_landmarks:
                     controller.mp_draw.draw_landmarks(
                         frame, hand_lms, controller.mp_hands.HAND_CONNECTIONS)
+        else:
+            cv2.putText(frame, "NO HAND DETECTED", (10, 120), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
                 
         cv2.putText(frame, f"Gesture: {gesture.upper()}", (10, 40), 
                     cv2.FONT_HERSHEY_DUPLEX, 1.2, (0, 255, 255), 2)
