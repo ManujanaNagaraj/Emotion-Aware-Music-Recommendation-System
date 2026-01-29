@@ -52,6 +52,8 @@ def run_webcam_emotion_recognition():
     # 3. State Tracking
     current_emotion = None
     current_confidence = 0.0
+    manual_emotion = None # Manual override for demo (happy, sad, etc.)
+    is_smiling = False     # Real-time smile status for hybrid detection
     
     # 4. Real-time Loop
     while True:
