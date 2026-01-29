@@ -29,6 +29,10 @@ class FaceDetector:
             raise FileNotFoundError(f"Haar Cascade model not found at: {model_path}")
 
         self.face_cascade = cv2.CascadeClassifier(model_path)
+        
+        # Load smile cascade for hybrid detection
+        smile_path = cv2.data.haarcascades + 'haarcascade_smile.xml'
+        self.smile_cascade = cv2.CascadeClassifier(smile_path)
 
         if self.face_cascade.empty():
             raise FileNotFoundError(f"Failed to load Haar Cascade model from: {model_path}")
