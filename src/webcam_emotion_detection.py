@@ -352,9 +352,18 @@ def run_webcam_emotion_recognition():
                 print("\n[WARNING] 'p' pressed but no emotion detected yet.")
 
     # Cleanup
+    print("\n" + "="*40)
+    print("SESSION SUMMARY")
+    print("="*40)
+    print(f"Total Frames Processed: {frames_processed}")
+    print(f"Frames with Faces:      {faces_detected} ({faces_detected/max(1,frames_processed)*100:.1f}%)")
+    print(f"Frames with Hands:      {hands_detected} ({hands_detected/max(1,frames_processed)*100:.1f}%)")
+    print("="*40 + "\n")
+    
     cap.release()
     cv2.destroyAllWindows()
-    print("Webcam released. Exiting application.")
+    gesture_controller.release()
+    print("Resources released. Exiting application.")
 
 if __name__ == "__main__":
     run_webcam_emotion_recognition()
