@@ -167,7 +167,22 @@ def run_webcam_emotion_recognition():
             
             # Display Gesture Indicator
             if gesture != "none" and gesture != "unknown":
-                cv2.putText(annotated_frame, f"HAND: {gesture.upper().replace('_', ' ')}", (10, 120), 
+                # Emoji mapping for UI
+                emoji_ui = {
+                    "open_palm": "\u270B",
+                    "fist": "\u270A",
+                    "point_right": "\ud83d\udc49",
+                    "point_left": "\ud83d\udc48",
+                    "two_fingers": "\u270c\ufe0f"
+                }
+                pure_gesture = gesture.replace(" (cooldown)", "")
+                icon = emoji_ui.get(pure_gesture, "")
+                
+                label_text = f"HAND: {pure_gesture.upper().replace('_', ' ')} {icon}"
+                if "cooldown" in gesture:
+                    label_text += " (WAIT)"
+                
+                cv2.putText(annotated_frame, label_text, (10, 120), 
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
         
         # Display Gesture Toggle Status
